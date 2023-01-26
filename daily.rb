@@ -2,6 +2,7 @@
 
 require 'sun_times'
 require 'mastodon'
+require 'active_support'
 require 'active_support/core_ext/time/zones'
 require 'active_support/core_ext/integer/inflections'
 require 'httparty'
@@ -45,7 +46,7 @@ def earliest_sunset_time
   rv = @sun_times.set(@today_noon, @lat, @lng)
   (1..365).each do |day_adjust|
     sunset_time = @sun_times.set(@today_noon - (day_adjust * 24 * 60 * 60), @lat, @lng)
-    rv = sunset_time if Tod::TimeOfDay(sunset_time.localtime) < Tod::TimeOfDay(rv.localtime)
+    rv = sunset_time if Tod::TimeOfDay(sunset_time.in_time_zone) < Tod::TimeOfDay(rv.in_time_zone)
   end
   rv
 end
@@ -61,7 +62,7 @@ earliest_diff_secs = seconds_between(earliest_sunset_time, @sun_times.set(@today
 diff_mins, diff_secs = earliest_diff_secs.divmod 60
 diff_secs = diff_secs.to_i
 words = %w[glorious delicious beautiful magnificent]
-sunset_local = @sun_times.set(@today_noon, @lat, @lng).localtime
+sunset_local = @sun_times.set(@today_noon, @lat, @lng).in_time_zone
 sunset_local_text = sunset_local.strftime('%l:%M%P %Z').lstrip
 text = "Today's sunset (#{today_friendly}) will be #{diff.abs.round} seconds "
 text << (diff.negative? ? 'earlier' : 'later')
