@@ -76,6 +76,12 @@ end
 text << ' more than the earliest sunset. '
 text << 'Hat-tip to @theauldsthretch@mastodon.ie'
 
+if @today_noon.day == 17 && @today_noon.month == 3
+  # If you thought I wouldn't add a cheesy St. Patrick's Day greeting, you were
+  # very wrong
+  text << " ☘️☘️☘️ Happy St. Patrick's Day! ☘️☘️☘️"
+end
+
 client = Mastodon::REST::Client.new(base_url: masto_server, bearer_token: masto_token)
 if masto_server.empty?
   puts text
